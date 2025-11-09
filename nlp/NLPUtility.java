@@ -1,4 +1,6 @@
+import com.sun.source.tree.Tree;
 import java.util.*;
+import javax.crypto.Mac;
 
 public class NLPUtility {
 
@@ -10,15 +12,16 @@ public class NLPUtility {
      * @return an array of word tokens, excluding punctuation and whitespace
      */
     public static String[] splitTextIntoTokens(String text) {
-        ArrayList<String> names = new ArrayList<String>();
+        ArrayList<String> names = new ArrayList<>();
         if(text.length()>0){
-            for e in range 0..text.length() -1
-       names.add(text.split("[\\s\\p{P}]+").toString());
-        System.out.println(names);}
+            names.addAll(Arrays.asList(text.split("[\\s\\p{P}]+")));
+            return names.toArray(new String[names.size() -1]);
+            }
         else{
             System.err.println("Error tokenizing input, Please try again!");
+            return null;
         }
-        return null;
+        
     }
 
     /**
@@ -34,8 +37,15 @@ public class NLPUtility {
      *         alphabetically.
      */
     public static TreeMap<String, Integer> countFilteredWords(String[] words, Set<String> stopWords) {
-        // TODO
-        return null;
+        
+        TreeMap<String, Integer> wordCount = new TreeMap<>();
+        for(String word: words){
+            String lowerWord = word.toLowerCase();
+            if(!stopWords.contains(lowerWord)){
+                wordCount.put(lowerWord, wordCount.getOrDefault(lowerWord, 0) + 1);
+            }
+        }
+        return wordCount;
     }
 
     /**
@@ -48,8 +58,14 @@ public class NLPUtility {
      *         sorted in descending order by value.
      */
     public static LinkedHashMap<String, Integer> sortByValueDescending(Map<String, Integer> map) {
-        // TODO
-        return null;
+        Map<String, Integer> sortedMap = map.entrySet()
+                .stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .collect(
+                        LinkedHashMap::new,
+                        (m, e) -> m.put(e.getKey(), e.getValue()),
+                        LinkedHashMap::putAll);
+        return (LinkedHashMap<String, Integer>) sortedMap;
     }
 
     /**
