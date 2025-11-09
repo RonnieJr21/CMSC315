@@ -79,8 +79,22 @@ public class NLPUtility {
      */
     public static String getSentiment(Map<String, Integer> wordMap, Set<String> positiveWords,
             Set<String> negativeWords) {
-        // TODO
-        return null;
+        
+                Map<String, Integer> sentimentCount = new HashMap<>();
+            int positiveCount = 0;
+            int negativeCount = 0;
+            for (Map.Entry<String, Integer> entry : wordMap.entrySet()) {
+                String word = entry.getKey();
+                int frequency = entry.getValue();
+                if (positiveWords.contains(word)) {
+                    positiveCount += frequency;
+                } else if (negativeWords.contains(word)) {
+                    negativeCount += frequency;
+                }
+            }
+            sentimentCount.put("Positive", positiveCount);
+            sentimentCount.put("Negative", negativeCount);
+        return "Positive: " + positiveCount + ", Negative: " + negativeCount;
     }
 
     /**
@@ -94,8 +108,23 @@ public class NLPUtility {
      *         - "frequency": The highest frequency value.
      */
     public static Map<String, Object> getWordsWithMaxFrequency(Map<String, Integer> wordMap) {
-        // TODO
-        return null;
+    
+        if (wordMap == null || wordMap.isEmpty()) {
+            return null;
+        }
+        int maxFrequency = Collections.max(wordMap.values());
+        List<String> mostFrequentWords = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : wordMap.entrySet()) {
+            if (entry.getValue() == maxFrequency) {
+                mostFrequentWords.add(entry.getKey());
+            }
+        }
+        Collections.sort(mostFrequentWords);
+        Map<String, Object> result = new HashMap<>();
+        return Map.of(
+            "words", mostFrequentWords,
+            "frequency", maxFrequency
+        );
     }
 
 }
